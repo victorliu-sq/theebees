@@ -19,8 +19,9 @@
 from __future__ import print_function
 from bcc import BPF
 from time import sleep, strftime
-import math
 import argparse
+import math
+import ctypes
 
 # prometheus
 from prometheus_client import start_http_server, Histogram
@@ -204,7 +205,8 @@ if args.extension:
         lock_xadd(&ext_val->count, 1);
         // GET THE MAX USECS
         if (delta > ext_val->max) {
-            ext_val->max = delta;
+            lock_xadd(&ext_val->max, delta - ext_val->max);
+            // ext_val->max = delta;
         }
     }
     """
@@ -238,6 +240,7 @@ start_http_server(METRICS_PORT)
 h = Histogram('oncpu_histogram', 'this is metrics of cpu')
 
 while (1):
+    print("new round")
     try:
         sleep(int(args.interval))
     except KeyboardInterrupt:
@@ -263,7 +266,8 @@ while (1):
         if count > 0:
             print("\navg = %ld %s, total: %ld %s, count: %ld, max: %ld\n" %
                 (total / count, label, total, label, count, max_usecs))
-        extension.clear()
+        # DO NOT CLEAR EXTENSION ARRAY
+        # extension.clear()
 
     # create the histogram in user space
     n = int(math.log2(max_usecs)) + 1
@@ -271,14 +275,21 @@ while (1):
     buckets = [[0] * 2 for _ in range(n)]
     for i in range(1, n + 1):
         l, h = math.pow(2, i - 1), math.pow(2, i) - 1
+        if i == 0:
+            l = 0
         buckets[i - 1] = [l, h]
     print(buckets)
-    
-    # for k, v in dist.items():
-    #     print(k, v)
+
+    # store items in dist in the newly created histogram
+    for k, v in dist.items():
+        k, v = k.value, v.value
+        print(k, v)
+
     # print(dist.keys())
-    dist.clear()
-    h.observe(2, {'trace_id': 'abc123'})
+
+    # DO NOT CLEAR DIST
+    # dist.clear()
+    # h.observe(2, {'trace_id': 'abc123'})
 
     countdown -= 1
     if exiting or countdown == 0:
