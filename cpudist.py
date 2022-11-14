@@ -22,9 +22,10 @@ from time import sleep, strftime
 import argparse
 import math
 import ctypes
+from collections import defaultdict
 
 # prometheus
-from prometheus_client import start_http_server, Histogram
+from prometheus_client import start_http_server, Gauge
 
 examples = """examples:
     cpudist              # summarize on-CPU time as a histogram
@@ -237,8 +238,12 @@ if args.extension:
 # Prometheus Server
 METRICS_PORT = 8080
 start_http_server(METRICS_PORT)
-h = Histogram('oncpu_histogram', 'this is metrics of cpu')
 
+# buckets for oncpu metrics
+# oncpu_buckets = [0] * 64
+oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
+
+bucket_idx2count = defaultdict(int)
 while (1):
     print("new round")
     try:
@@ -269,27 +274,35 @@ while (1):
         # DO NOT CLEAR EXTENSION ARRAY
         # extension.clear()
 
-    # create the histogram in user space
+    # Get the number of buckets
     n = int(math.log2(max_usecs)) + 1
     print("num of buckets is %ld" % n)
-    buckets = [[0] * 2 for _ in range(n)]
-    for i in range(1, n + 1):
-        l, h = math.pow(2, i - 1), math.pow(2, i) - 1
-        if i == 0:
-            l = 0
-        buckets[i - 1] = [l, h]
-    print(buckets)
 
+    # create the histogram in user space
     # store items in dist in the newly created histogram
     for k, v in dist.items():
+        # k is index of bucket(1-index) and v is count
         k, v = k.value, v.value
-        print(k, v)
+        if k == 0 or k - 1 >= n:
+            continue
+        l, h = 1 << (k - 1), (1 << k) - 1
+        if k == 1:
+            l = 0
+        bucket_range = str(l) + "-" + str(h)
+        print(bucket_range)
+        i = k - 1
+        bucket_idx2count[i] = max(v, bucket_idx2count[i])
+        oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
 
-    # print(dist.keys())
+    for i in range(1, n + 1):
+        l, h = 1 << (i - 1), (1 << i) - 1
+        if i == 1:
+            l = 0
+        print("bound : count")
+        print("[%ld, %ld], %d\n" % (l, h, bucket_idx2count[i - 1]))
 
     # DO NOT CLEAR DIST
     # dist.clear()
-    # h.observe(2, {'trace_id': 'abc123'})
 
     countdown -= 1
     if exiting or countdown == 0:
