@@ -242,7 +242,6 @@ start_http_server(METRICS_PORT)
 # buckets for oncpu metrics
 # oncpu_buckets = [0] * 64
 oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
-
 bucket_idx2count = defaultdict(int)
 while (1):
     print("new round")
