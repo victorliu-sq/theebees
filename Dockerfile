@@ -97,10 +97,12 @@ RUN make KERNELRELEASE=5.10.102.1-microsoft-standard-WSL2 modules_install
 # RUN make
 
 # CMD ["mount -t debugfs debugfs /sys/kernel/debug"]
+# ENTRYPOINT [ "mount -t debugfs debugfs /sys/kernel/debug" ]
 
 # at the root
 WORKDIR /
 
 COPY cpudist.py .
-
-CMD [ "python3", "./cpudist.py", "-p", "12", "-e", "1" ]
+COPY counter.py .
+# CMD [ "python3", "./cpudist.py", "-P", "-e", "1" ]
+CMD [ "python3", "./cpudist.py", "-p", "9485", "-e", "1" ]

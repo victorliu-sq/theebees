@@ -263,6 +263,7 @@ while (1):
 
     dist.print_log2_hist(label, section, section_print_fn=pid_to_comm)
 
+    max_usecs = 0
     if args.extension:
         total = extension[0].total
         count = extension[0].count
@@ -274,31 +275,34 @@ while (1):
         # extension.clear()
 
     # Get the number of buckets
+    if max_usecs == 0:
+        max_usecs += 1
     n = int(math.log2(max_usecs)) + 1
     print("num of buckets is %ld" % n)
 
     # create the histogram in user space
     # store items in dist in the newly created histogram
-    for k, v in dist.items():
-        # k is index of bucket(1-index) and v is count
-        k, v = k.value, v.value
-        if k == 0 or k - 1 >= n:
-            continue
-        l, h = 1 << (k - 1), (1 << k) - 1
-        if k == 1:
-            l = 0
-        bucket_range = str(l) + "-" + str(h)
-        print(bucket_range)
-        i = k - 1
-        bucket_idx2count[i] = max(v, bucket_idx2count[i])
-        oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
+    # for k, v in dist.items():
+    #     # k is index of bucket(1-index) and v is count
+    #     # print(k, v)
+    #     k, v = k.value, v.value
+    #     if k == 0 or k - 1 >= n:
+    #         continue
+    #     l, h = 1 << (k - 1), (1 << k) - 1
+    #     if k == 1:
+    #         l = 0
+    #     bucket_range = str(l) + "-" + str(h)
+    #     # print(bucket_range)
+    #     i = k - 1
+    #     bucket_idx2count[i] = max(v, bucket_idx2count[i])
+    #     oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
 
-    for i in range(1, n + 1):
-        l, h = 1 << (i - 1), (1 << i) - 1
-        if i == 1:
-            l = 0
-        print("bound : count")
-        print("[%ld, %ld], %d\n" % (l, h, bucket_idx2count[i - 1]))
+    # for i in range(1, n + 1):
+    #     l, h = 1 << (i - 1), (1 << i) - 1
+    #     if i == 1:
+    #         l = 0
+    #     print("bound : count")
+    #     print("[%ld, %ld], %d\n" % (l, h, bucket_idx2count[i - 1]))
 
     # DO NOT CLEAR DIST
     # dist.clear()
