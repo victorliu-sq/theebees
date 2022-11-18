@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  cpudist:
+    build: ./
+    command: python3 ./cpudist.py -p 9485 -e 1 
+    ports:
+      - 8000:8080
+    privileged: true
+    volumes:
+      - /sys/kernel/debug:/sys/kernel/debug:rw

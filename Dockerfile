@@ -110,5 +110,5 @@ COPY cmd_wrapper_script.sh cmd_wrapper_script.sh
 # CMD [ "python3", "./cpudist.py", "-P", "-e", "1" ]
 # CMD [ "python3", "./cpudist.py", "-p", "9485", "-e", "1" ]
 # CMD [ "python3", "./cpudist.py", "-p", "1", "-e", "1" ]
-
-CMD ./cmd_wrapper_script.sh
+# CMD ./cmd_wrapper_script.sh
+# CMD ["ls", "-lah"]

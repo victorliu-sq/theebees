@@ -3,7 +3,7 @@ def main():
     time = 1
     counter = 1
     while time < 5:
-        # print("cur time is ", time)
+        print("cur time is ", time)
         for _ in range (1000):
             counter += 1
         sleep(1)
