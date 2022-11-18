@@ -99,10 +99,16 @@ RUN make KERNELRELEASE=5.10.102.1-microsoft-standard-WSL2 modules_install
 # CMD ["mount -t debugfs debugfs /sys/kernel/debug"]
 # ENTRYPOINT [ "mount -t debugfs debugfs /sys/kernel/debug" ]
 
+# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # at the root
 WORKDIR /
 
-COPY cpudist.py .
-COPY counter.py .
+COPY cpudist.py cpudist.py
+COPY counter.py counter.py
+COPY cmd_wrapper_script.sh cmd_wrapper_script.sh
 # CMD [ "python3", "./cpudist.py", "-P", "-e", "1" ]
-CMD [ "python3", "./cpudist.py", "-p", "9485", "-e", "1" ]
+# CMD [ "python3", "./cpudist.py", "-p", "9485", "-e", "1" ]
+# CMD [ "python3", "./cpudist.py", "-p", "1", "-e", "1" ]
+
+CMD ./cmd_wrapper_script.sh
