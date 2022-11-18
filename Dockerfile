@@ -25,12 +25,31 @@ RUN apt-get dist-upgrade
 RUN apt-get install -y bison build-essential cmake flex git libedit-dev \
   libllvm12 llvm-12-dev libclang-12-dev python zlib1g-dev libelf-dev libfl-dev python3-distutils
 
+# install prometheus client
+# -y => yes
+RUN apt-get install -y python3-pip
+
+RUN pip install prometheus-client
+
+# install bcc
+WORKDIR /
+RUN git clone https://github.com/iovisor/bcc.git
+RUN mkdir bcc/build
+WORKDIR  bcc/build
+RUN cmake ..
+RUN make
+RUN  make install
+RUN cmake -DPYTHON_CMD=python3 ..
+
+#install bpftrace
+RUN apt-get install -y bpftrace
+
+# WSL
 # install linux header
 # RUN apt-get install –y linux-headers-5.10.147+
 # RUN apt-get install -y linux-headers-gcp
 RUN git clone https://github.com/microsoft/WSL2-Linux-Kernel.git
 
-# WSL
 WORKDIR WSL2-Linux-Kernel
 
 RUN export KERNELRELEASE=5.10.102.1-microsoft-standard-WSL2
@@ -46,7 +65,7 @@ RUN apt install -y dwarves
 
 RUN apt-get install -y fakeroot build-essential crash kexec-tools makedumpfile kernel-wedge
 
-RUN make KERNELRELEASE=$KERNELRELEASE defconfig
+# RUN make KERNELRELEASE=$KERNELRELEASE defconfig
 
 RUN cp Microsoft/config-wsl .config \
 # enable modules
@@ -68,31 +87,20 @@ RUN make -t KERNELRELEASE=5.10.102.1-microsoft-standard-WSL2 menuconfig
 RUN make KERNELRELEASE=5.10.102.1-microsoft-standard-WSL2 modules_install
 
 # install bpf tool
-WORKDIR /WSL2-Linux-Kernel/tools/bpf/bpftool
+# WORKDIR /WSL2-Linux-Kernel/tools/bpf/bpftool
 
-RUN make
+# RUN make
+
+# No such file or directory: '/sys/kernel/debug/kprobes/blacklist'
+# WORKDIR /WSL2-Linux-Kernel/kernel/debug
+
+# RUN make
 
 # CMD ["mount -t debugfs debugfs /sys/kernel/debug"]
 
-# install prometheus client
-# -y => yes
-RUN apt-get install -y python3-pip
-
-RUN pip install prometheus-client
-
+# at the root
 WORKDIR /
-RUN git clone https://github.com/iovisor/bcc.git
-RUN mkdir bcc/build
-WORKDIR  bcc/build
-RUN cmake ..
-RUN make
-RUN  make install
-RUN cmake -DPYTHON_CMD=python3 .. # build python3 binding
-
-WORKDIR /usr/sbin/
 
 COPY cpudist.py .
 
-# ENTRYPOINT sudo mount -t debugfs nodev /sys/kernel/debug
-
-CMD [ "python3", "./cpudist.py" ]
+CMD [ "python3", "./cpudist.py", "-p", "12", "-e", "1" ]
