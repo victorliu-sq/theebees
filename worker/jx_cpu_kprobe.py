@@ -337,8 +337,8 @@ while (1):
         bucket_idx2count[i] = max(v, bucket_idx2count[i])
         # update the 3 metrics
         cur_metrics_cpu[bucket_range] = bucket_idx2count[i]
-        # print(bucket_idx2count[i])
-        if bucket_range in  metrics_cpu_sum:
+        print(bucket_range, bucket_idx2count[i])
+        if bucket_range in metrics_cpu_sum:
             metrics_cpu_sum[bucket_range] += bucket_idx2count[i]
         else:
             metrics_cpu_sum[bucket_range] = bucket_idx2count[i]

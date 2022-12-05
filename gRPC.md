@@ -20,6 +20,7 @@ protoc --python_out=proto proto/msg.proto
 
 ```shell
 #install: protobuf, grpcio, grpcio-tools
+sudo apt install protobuf-compiler
 pip install protobuf
 pip install grpcio
 pip install grpcio-tools
