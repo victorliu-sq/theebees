@@ -260,7 +260,11 @@ with open('db/cpu.json', "w") as f:
     json.dump(data, f)
 
 while (1):
-    print("new round")
+    curTime += 1
+    print("Current Time is:", curTime)
+    if (curTime+1) % 5 != 0:
+        continue
+
     try:
         sleep(int(args.interval))
     except KeyboardInterrupt:
@@ -287,8 +291,8 @@ while (1):
         if count > 0:
             print("\navg = %ld %s, total: %ld %s, count: %ld, max: %ld\n" %
                 (total / count, label, total, label, count, max_usecs))
-        # DO NOT CLEAR EXTENSION ARRAY
-        # extension.clear()
+        # Clear the extension
+        extension.clear()
 
     # Get the number of buckets
     if max_usecs == 0:
@@ -320,29 +324,25 @@ while (1):
     #         l = 0
     #     print("bound : count")
     #     print("[%ld, %ld], %d\n" % (l, h, bucket_idx2count[i - 1]))
+    print("Write CPU metrics into json File")
+    time_range = str(curTime + 1 - 5) + "-" + str(curTime)
+    temp_data = {}
+    with open("db/cpu.json", "r") as f:
+        data = json.load(f)
+        # print(data["cpu"])
+        temp_data = data["cpu"]
+    # print(temp)
+    cpu_metrics["time-range"] = time_range 
+    print("current CPU:", cpu_metrics)
 
-    curTime += 1
-    print("Current Time is:", curTime)
-    if (curTime+1) % 5 == 0:
-        print("Write CPU metrics into json File")
-        time_range = str(curTime + 1 - 5) + "-" + str(curTime)
-        temp_data = {}
-        with open("db/cpu.json", "r") as f:
-            data = json.load(f)
-            # print(data["cpu"])
-            temp_data = data["cpu"]
-        # print(temp)
-        cpu_metrics["time-range"] = time_range 
-        print("current CPU:", cpu_metrics)
+    temp_data += [cpu_metrics]
+    data["cpu"] = temp_data
+    print("current json file", temp_data)
+    with open('db/cpu.json', "w") as f:
+        json.dump(data, f)
 
-        temp_data += [cpu_metrics]
-        data["cpu"] = temp_data
-        print("current json file", temp_data)
-        with open('db/cpu.json', "w") as f:
-            json.dump(data, f)
-
-        dist.clear()
-        cpu_metrics = {}
+    dist.clear()
+    cpu_metrics = {}
 
     countdown -= 1
     if exiting or countdown == 0:
