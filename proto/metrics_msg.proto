@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package metrics_msg;
+
+message MetricsRequest{
+    string metrics = 1;
+}
+
+message MetricsResponse{
+    string data = 1;
+}
+
+service QueryManager {
+    rpc QueryMetrics (MetricsRequest) returns (MetricsResponse);
+}
