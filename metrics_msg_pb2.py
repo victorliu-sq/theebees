@@ -13,17 +13,17 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11metrics_msg.proto\x12\x0bmetrics_msg\"!\n\x0eMetricsRequest\x12\x0f\n\x07metrics\x18\x01 \x01(\t\"\x1f\n\x0fMetricsResponse\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t2Y\n\x0cQueryManager\x12I\n\x0cQueryMetrics\x12\x1b.metrics_msg.MetricsRequest\x1a\x1c.metrics_msg.MetricsResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11metrics_msg.proto\x12\x07Metrics\"!\n\x0eMetricsRequest\x12\x0f\n\x07metrics\x18\x01 \x01(\t\"\x1f\n\x0fMetricsResponse\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t2S\n\x0cQueryManager\x12\x43\n\x0cQueryMetrics\x12\x17.Metrics.MetricsRequest\x1a\x18.Metrics.MetricsResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'metrics_msg_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _METRICSREQUEST._serialized_start=34
-  _METRICSREQUEST._serialized_end=67
-  _METRICSRESPONSE._serialized_start=69
-  _METRICSRESPONSE._serialized_end=100
-  _QUERYMANAGER._serialized_start=102
-  _QUERYMANAGER._serialized_end=191
+  _METRICSREQUEST._serialized_start=30
+  _METRICSREQUEST._serialized_end=63
+  _METRICSRESPONSE._serialized_start=65
+  _METRICSRESPONSE._serialized_end=96
+  _QUERYMANAGER._serialized_start=98
+  _QUERYMANAGER._serialized_end=181
 # @@protoc_insertion_point(module_scope)

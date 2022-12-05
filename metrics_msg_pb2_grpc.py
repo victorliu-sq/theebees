@@ -15,7 +15,7 @@ class QueryManagerStub(object):
             channel: A grpc.Channel.
         """
         self.QueryMetrics = channel.unary_unary(
-                '/metrics_msg.QueryManager/QueryMetrics',
+                '/Metrics.QueryManager/QueryMetrics',
                 request_serializer=metrics__msg__pb2.MetricsRequest.SerializeToString,
                 response_deserializer=metrics__msg__pb2.MetricsResponse.FromString,
                 )
@@ -40,7 +40,7 @@ def add_QueryManagerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'metrics_msg.QueryManager', rpc_method_handlers)
+            'Metrics.QueryManager', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -59,7 +59,7 @@ class QueryManager(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/metrics_msg.QueryManager/QueryMetrics',
+        return grpc.experimental.unary_unary(request, target, '/Metrics.QueryManager/QueryMetrics',
             metrics__msg__pb2.MetricsRequest.SerializeToString,
             metrics__msg__pb2.MetricsResponse.FromString,
             options, channel_credentials,
