@@ -256,6 +256,9 @@ with open('db/cpu.json', "w") as f:
     data["cpu"] = []
     json.dump(data, f)
 
+# Record interval
+RECORD_TIME_INTERVAL = 5
+
 while (1):
     curTime += 1
     print("Current Time is:", curTime)
@@ -309,6 +312,16 @@ while (1):
     metrics_cpu = []
     metrics_cpu_sum = defaultdict(int)
     metrics_cpu_avg = defaultdict(float)
+    print("Read CPU metrics from a json File")
+    with open("db/cpu.json", "r") as f:
+        data = json.load(f)
+        # print(data["cpu"])
+        metrics_cpu_sum = data["cpu_sum"]
+        metrics_cpu_avg = data["cpu_avg"]
+        metrics_cpu = data["cpu"]
+        # print(metrics_cpu)
+
+    # Update cpu metrics with current cur_cpu_metrics
     for k, v in dist.items():
         # k is index of bucket(1-index) and v is count
         # print(k, v)
@@ -322,28 +335,35 @@ while (1):
         # print(bucket_range)
         i = k - 1
         bucket_idx2count[i] = max(v, bucket_idx2count[i])
+        # update the 3 metrics
         cur_metrics_cpu[bucket_range] = bucket_idx2count[i]
+        # print(bucket_idx2count[i])
+        if bucket_range in  metrics_cpu_sum:
+            metrics_cpu_sum[bucket_range] += bucket_idx2count[i]
+        else:
+            metrics_cpu_sum[bucket_range] = bucket_idx2count[i]
+        metrics_cpu_avg[bucket_range] = metrics_cpu_sum[bucket_range] / ((curTime + 1) // RECORD_TIME_INTERVAL)
 
-    print("Write CPU metrics into json File")
-    time_range = str(curTime + 1 - 5) + "-" + str(curTime)
-    with open("db/cpu.json", "r") as f:
-        data = json.load(f)
-        # print(data["cpu"])
-        metrics_cpu_sum = data["cpu_sum"]
-        metrics_cpu_avg = data["cpu_avg"]
-        metrics_cpu = data["cpu"]
-        print(metrics_cpu)
-    # print(temp)
+
+    time_range = str(curTime + 1 - RECORD_TIME_INTERVAL) + "-" + str(curTime)
     cur_metrics_cpu["time-range"] = time_range 
-    print("current CPU:", cur_metrics_cpu)
-
     metrics_cpu += [cur_metrics_cpu]
     data["cpu_sum"] = metrics_cpu_sum
     data["cpu_avg"] = metrics_cpu_avg
     data["cpu"] = metrics_cpu
-    # print("current json file", metrics_cpu)
 
-    # Write udpate metrics back into the file 
+    print("=================================================================")
+    print("current CPU:", cur_metrics_cpu)
+    print("=================================================================")
+    print("CPU_sum:", metrics_cpu_sum)
+    print("=================================================================")
+    print("CPU_avg:", metrics_cpu_avg)
+    print("=================================================================")
+    # print("current json file", metrics_cpu)
+    # print("=================================================================")
+
+    # Write udpate metrics back into the file
+    print("Write CPU metrics into a json File")
     with open('db/cpu.json', "w") as f:
         json.dump(data, f)
 
