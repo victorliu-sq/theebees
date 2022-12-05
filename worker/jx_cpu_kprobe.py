@@ -71,6 +71,14 @@ debug = 0
 countdown = int(args.count)
 # countdown = 5
 
+
+# ********************************************************************
+args.extension = 1
+args.pid = 3327
+args.interval = 1
+
+
+
 bpf_text = """
 #include <uapi/linux/ptrace.h>
 #include <linux/sched.h>
@@ -258,9 +266,6 @@ with open('db/cpu.json', "w") as f:
 
 # Record interval
 RECORD_TIME_INTERVAL = 5
-
-args.pid = 3327
-args.interval = 1
 
 while (1):
     curTime += 1
