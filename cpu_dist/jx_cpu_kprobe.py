@@ -270,7 +270,6 @@ while (1):
     except KeyboardInterrupt:
         exiting = 1
 
-    print()
     if args.timestamp:
         print("%-8s\n" % strftime("%H:%M:%S"), end="")
 
