@@ -245,6 +245,8 @@ cpu_metrics = {}
 
 # time
 curTime = 0
+# max_use_cs
+max_bucket_num = 0
 
 # initialize cpu.json: cpu, avg_cpu, sum_cpu
 data = {}
@@ -278,25 +280,34 @@ while (1):
 
     dist.print_log2_hist(label, section, section_print_fn=pid_to_comm)
 
-    max_usecs = 0
+    # update max usecs
+    cur_max_usecs = 0
     if args.extension:
         total = extension[0].total
         count = extension[0].count
-        max_usecs = extension[0].max
+        cur_max_usecs = extension[0].max
+        # update max_usecs
+
         if count > 0:
             print("\navg = %ld %s, total: %ld %s, count: %ld, max: %ld\n" %
-                (total / count, label, total, label, count, max_usecs))
+                (total / count, label, total, label, count, cur_max_usecs))
         # Clear the extension
         extension.clear()
 
     # Get the number of buckets
-    if max_usecs == 0:
-        max_usecs += 1
-    n = int(math.log2(max_usecs)) + 1
+    if cur_max_usecs == 0:
+        cur_max_usecs += 1
+    n = int(math.log2(cur_max_usecs)) + 1
+    # update max bucket num
+    if n > max_bucket_num:
+        max_bucket_num = n
     print("num of buckets is %ld" % n)
-
+    print("max num of buckets is %ld" % max_bucket_num)
     # create the histogram in user space
     # store items in dist in the newly created histogram
+    metrics_cpu = []
+    metrics_cpu_sum = defaultdict(int)
+    metrics_cpu_sum = defaultdict(float)
     for k, v in dist.items():
         # k is index of bucket(1-index) and v is count
         # print(k, v)
@@ -310,23 +321,22 @@ while (1):
         # print(bucket_range)
         i = k - 1
         bucket_idx2count[i] = max(v, bucket_idx2count[i])
-        # oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
         cpu_metrics[bucket_range] = bucket_idx2count[i]
 
     print("Write CPU metrics into json File")
     time_range = str(curTime + 1 - 5) + "-" + str(curTime)
-    temp_data = {}
     with open("db/cpu.json", "r") as f:
         data = json.load(f)
         # print(data["cpu"])
-        temp_data = data["cpu"]
+        metrics_cpu = data["cpu"]
+        print(metrics_cpu)
     # print(temp)
     cpu_metrics["time-range"] = time_range 
     print("current CPU:", cpu_metrics)
 
-    temp_data += [cpu_metrics]
-    data["cpu"] = temp_data
-    # print("current json file", temp_data)
+    metrics_cpu += [cpu_metrics]
+    data["cpu"] = metrics_cpu
+    # print("current json file", metrics_cpu)
     with open('db/cpu.json', "w") as f:
         json.dump(data, f)
 
