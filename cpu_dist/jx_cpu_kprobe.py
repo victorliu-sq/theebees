@@ -25,9 +25,6 @@ import ctypes
 import json
 from collections import defaultdict
 
-# prometheus
-from prometheus_client import start_http_server, Gauge
-
 examples = """examples:
     cpudist              # summarize on-CPU time as a histogram
     cpudist -O           # summarize off-CPU time as a histogram
@@ -239,10 +236,6 @@ dist = b.get_table("dist")
 if args.extension:
     extension = b.get_table("extension")
 
-# Prometheus Server
-METRICS_PORT = 8080
-start_http_server(METRICS_PORT)
-
 # buckets for oncpu metrics
 # oncpu_buckets = [0] * 64
 # oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
@@ -253,10 +246,12 @@ cpu_metrics = {}
 # time
 curTime = 0
 
-# initialize cpu.json
+# initialize cpu.json: cpu, avg_cpu, sum_cpu
 data = {}
 with open('db/cpu.json', "w") as f:
     data["cpu"] = []
+    data["avg_cpu"] = defaultdict(float)
+    data["sum_cpu"] = defaultdict(int)
     json.dump(data, f)
 
 while (1):
@@ -331,7 +326,7 @@ while (1):
 
     temp_data += [cpu_metrics]
     data["cpu"] = temp_data
-    print("current json file", temp_data)
+    # print("current json file", temp_data)
     with open('db/cpu.json', "w") as f:
         json.dump(data, f)
 
