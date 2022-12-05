@@ -237,12 +237,12 @@ if args.extension:
     extension = b.get_table("extension")
 
 # buckets for oncpu metrics
-# oncpu_buckets = [0] * 64
-# oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
 bucket_idx2count = defaultdict(int)
 # range : count
-cpu_metrics = {}
 
+# Initialization
+# current_metrics_cpu
+cur_metrics_cpu = {}
 # time
 curTime = 0
 # max_use_cs
@@ -251,9 +251,9 @@ max_bucket_num = 0
 # initialize cpu.json: cpu, avg_cpu, sum_cpu
 data = {}
 with open('db/cpu.json', "w") as f:
+    data["cpu_avg"] = defaultdict(float)
+    data["cpu_sum"] = defaultdict(int)
     data["cpu"] = []
-    data["avg_cpu"] = defaultdict(float)
-    data["sum_cpu"] = defaultdict(int)
     json.dump(data, f)
 
 while (1):
@@ -305,9 +305,10 @@ while (1):
     print("max num of buckets is %ld" % max_bucket_num)
     # create the histogram in user space
     # store items in dist in the newly created histogram
+    data = {}
     metrics_cpu = []
     metrics_cpu_sum = defaultdict(int)
-    metrics_cpu_sum = defaultdict(float)
+    metrics_cpu_avg = defaultdict(float)
     for k, v in dist.items():
         # k is index of bucket(1-index) and v is count
         # print(k, v)
@@ -321,34 +322,36 @@ while (1):
         # print(bucket_range)
         i = k - 1
         bucket_idx2count[i] = max(v, bucket_idx2count[i])
-        cpu_metrics[bucket_range] = bucket_idx2count[i]
+        cur_metrics_cpu[bucket_range] = bucket_idx2count[i]
 
     print("Write CPU metrics into json File")
     time_range = str(curTime + 1 - 5) + "-" + str(curTime)
     with open("db/cpu.json", "r") as f:
         data = json.load(f)
         # print(data["cpu"])
+        metrics_cpu_sum = data["cpu_sum"]
+        metrics_cpu_avg = data["cpu_avg"]
         metrics_cpu = data["cpu"]
         print(metrics_cpu)
     # print(temp)
-    cpu_metrics["time-range"] = time_range 
-    print("current CPU:", cpu_metrics)
+    cur_metrics_cpu["time-range"] = time_range 
+    print("current CPU:", cur_metrics_cpu)
 
-    metrics_cpu += [cpu_metrics]
+    metrics_cpu += [cur_metrics_cpu]
+    data["cpu_sum"] = metrics_cpu_sum
+    data["cpu_avg"] = metrics_cpu_avg
     data["cpu"] = metrics_cpu
     # print("current json file", metrics_cpu)
+
+    # Write udpate metrics back into the file 
     with open('db/cpu.json', "w") as f:
         json.dump(data, f)
 
     dist.clear()
-    cpu_metrics = {}
+    cur_metrics_cpu = {}
 
     countdown -= 1
     if exiting or countdown == 0:
         exit()
 
-
-
-def cpu2json(cpu_metrics):
-    name = "cpu"
     
