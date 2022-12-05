@@ -245,7 +245,7 @@ start_http_server(METRICS_PORT)
 
 # buckets for oncpu metrics
 # oncpu_buckets = [0] * 64
-oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
+# oncpu_gauge = Gauge('oncpu_count', 'metrics of cpu', ['pid', 'usecs_range'])
 bucket_idx2count = defaultdict(int)
 # range : count
 cpu_metrics = {}
@@ -311,7 +311,7 @@ while (1):
         # print(bucket_range)
         i = k - 1
         bucket_idx2count[i] = max(v, bucket_idx2count[i])
-        oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
+        # oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
         cpu_metrics[bucket_range] = bucket_idx2count[i]
 
     # for i in range(1, n + 1):
