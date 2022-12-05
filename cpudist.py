@@ -70,8 +70,8 @@ args = parser.parse_args()
 
 debug = 0
 
-# countdown = int(args.count)
-countdown = 5
+countdown = int(args.count)
+# countdown = 5
 
 bpf_text = """
 #include <uapi/linux/ptrace.h>

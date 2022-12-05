@@ -195,5 +195,10 @@ b.attach_kprobe(event_re="^finish_task_switch$|^finish_task_switch\.isra\.\d$",
 ```shell
 # python3
 sudo python3 ./cpudist.py -p 1180882 -e 1
+
+sudo python3 ./cpu_dist/test_cpu_kprobe.py -p 3327 -e 1
+
+# check all processes
+sudo python3 ./cpu_dist/test_cpu_kprobe.py -P -e 1
 ```
 
