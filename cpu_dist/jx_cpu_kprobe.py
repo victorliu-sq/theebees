@@ -254,9 +254,10 @@ cpu_metrics = {}
 curTime = 0
 
 # initialize cpu.json
+data = {}
 with open('db/cpu.json', "w") as f:
-    cpu_metrics["cpu"] = []
-    json.dump(cpu_metrics, f)
+    data["cpu"] = []
+    json.dump(data, f)
 
 while (1):
     print("new round")
@@ -325,22 +326,23 @@ while (1):
     if (curTime+1) % 5 == 0:
         print("Write CPU metrics into json File")
         time_range = str(curTime + 1 - 5) + "-" + str(curTime)
-        temp = {}
+        temp_data = {}
         with open("db/cpu.json", "r") as f:
             data = json.load(f)
             # print(data["cpu"])
-            temp = data["cpu"]
+            temp_data = data["cpu"]
         # print(temp)
         cpu_metrics["time-range"] = time_range 
         print("current CPU:", cpu_metrics)
 
-        temp += [cpu_metrics]
-        print("current json file", temp)
-        # with open('db/cpu.json', "w") as f:
-        #     json.dump(cpu_metrics, f)
+        temp_data += [cpu_metrics]
+        data["cpu"] = temp_data
+        print("current json file", temp_data)
+        with open('db/cpu.json', "w") as f:
+            json.dump(data, f)
 
         dist.clear()
-        # cpu_metrics = {}
+        cpu_metrics = {}
 
     countdown -= 1
     if exiting or countdown == 0:
