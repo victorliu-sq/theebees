@@ -318,12 +318,6 @@ while (1):
         # oncpu_gauge.labels(str(args.pid), bucket_range).set(bucket_idx2count[i])
         cpu_metrics[bucket_range] = bucket_idx2count[i]
 
-    # for i in range(1, n + 1):
-    #     l, h = 1 << (i - 1), (1 << i) - 1
-    #     if i == 1:
-    #         l = 0
-    #     print("bound : count")
-    #     print("[%ld, %ld], %d\n" % (l, h, bucket_idx2count[i - 1]))
     print("Write CPU metrics into json File")
     time_range = str(curTime + 1 - 5) + "-" + str(curTime)
     temp_data = {}
