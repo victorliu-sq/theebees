@@ -2,10 +2,8 @@
 
 ```shell
 # run the cpu_kprobe
-sudo python3 ./kprobes/jx_cpu_kprobe.py -d v1/db1/metrics.json
+sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
 ```
-
-
 
 
 
