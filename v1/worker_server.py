@@ -32,5 +32,8 @@ class Metrics(Resource):
 api.add_resource(Metrics, '/<string:req_metrics>')
 
 if __name__ == '__main__':
+    ua = UserAgent()
+    thread_cpu_collector = Thread(target=ua.run_cpu_kprobe)
+    thread_cpu_collector.start()
     app.run(debug=True)
-
+    thread_cpu_collector.join()
