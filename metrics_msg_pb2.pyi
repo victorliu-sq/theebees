@@ -5,7 +5,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class CPUDist(_message.Message):
+class CPUDistFloat(_message.Message):
     __slots__ = ["range2usecs"]
     class Range2usecsEntry(_message.Message):
         __slots__ = ["key", "value"]
@@ -18,6 +18,19 @@ class CPUDist(_message.Message):
     range2usecs: _containers.ScalarMap[str, float]
     def __init__(self, range2usecs: _Optional[_Mapping[str, float]] = ...) -> None: ...
 
+class CPUDistUint32(_message.Message):
+    __slots__ = ["range2usecs"]
+    class Range2usecsEntry(_message.Message):
+        __slots__ = ["key", "value"]
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: int
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[int] = ...) -> None: ...
+    RANGE2USECS_FIELD_NUMBER: _ClassVar[int]
+    range2usecs: _containers.ScalarMap[str, int]
+    def __init__(self, range2usecs: _Optional[_Mapping[str, int]] = ...) -> None: ...
+
 class MetricsRequest(_message.Message):
     __slots__ = ["metrics"]
     METRICS_FIELD_NUMBER: _ClassVar[int]
@@ -29,7 +42,13 @@ class MetricsResponse(_message.Message):
     CPU_AVG_FIELD_NUMBER: _ClassVar[int]
     CPU_FIELD_NUMBER: _ClassVar[int]
     CPU_SUM_FIELD_NUMBER: _ClassVar[int]
-    cpu: _containers.RepeatedCompositeFieldContainer[CPUDist]
-    cpu_avg: CPUDist
-    cpu_sum: CPUDist
-    def __init__(self, cpu_avg: _Optional[_Union[CPUDist, _Mapping]] = ..., cpu_sum: _Optional[_Union[CPUDist, _Mapping]] = ..., cpu: _Optional[_Iterable[_Union[CPUDist, _Mapping]]] = ...) -> None: ...
+    cpu: MultipleCPUDistUint32
+    cpu_avg: CPUDistFloat
+    cpu_sum: CPUDistUint32
+    def __init__(self, cpu_avg: _Optional[_Union[CPUDistFloat, _Mapping]] = ..., cpu_sum: _Optional[_Union[CPUDistUint32, _Mapping]] = ..., cpu: _Optional[_Union[MultipleCPUDistUint32, _Mapping]] = ...) -> None: ...
+
+class MultipleCPUDistUint32(_message.Message):
+    __slots__ = ["multiple_range2usecs"]
+    MULTIPLE_RANGE2USECS_FIELD_NUMBER: _ClassVar[int]
+    multiple_range2usecs: _containers.RepeatedCompositeFieldContainer[CPUDistUint32]
+    def __init__(self, multiple_range2usecs: _Optional[_Iterable[_Union[CPUDistUint32, _Mapping]]] = ...) -> None: ...

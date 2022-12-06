@@ -3,10 +3,24 @@ import metrics_msg_pb2
 import metrics_msg_pb2_grpc
 from concurrent import futures
 import json
+import google.protobuf.json_format
 
-def load_cpu_avg(cpu_avg, resp:metrics_msg_pb2.MetricsResponse):
+def to_protobuf_cpu_avg(cpu_avg, resp:metrics_msg_pb2.MetricsResponse):
     for k, v in cpu_avg.items():
        resp.cpu_avg.range2usecs[k] = v
+
+def to_protobuf_cpu_sum(cpu_sum, resp:metrics_msg_pb2.MetricsResponse):
+    for k, v in cpu_sum.items():
+       resp.cpu_sum.range2usecs[k] = v
+       
+def to_protobuf_cpu(cpu_arr, resp:metrics_msg_pb2.MetricsResponse):
+    for cpu in cpu_arr:
+        # print(cpu)
+        temp_cpu_dist = metrics_msg_pb2.CPUDistUint32()
+        for k, v in cpu.items():
+            print(k, v)
+            temp_cpu_dist.range2usecs[k] = v
+        resp.cpu.multiple_range2usecs.append(temp_cpu_dist)
 
 class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
     def QueryMetrics(self, request, context):
@@ -20,8 +34,13 @@ class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
                 if m not in data:
                     continue
                 if m == "cpu_avg":
-                    load_cpu_avg(data[m], metrics_resp)
-                    print(metrics_resp)
+                    to_protobuf_cpu_avg(data[m], metrics_resp)
+                elif m == "cpu_sum":
+                    to_protobuf_cpu_sum(data[m], metrics_resp)
+                elif m == "cpu":
+                    to_protobuf_cpu(data[m], metrics_resp)
+            print(metrics_resp)
+                # elif m == "cpu":
                 # results[m] = data[m]
         # print(results)
         # print(request.metrics)

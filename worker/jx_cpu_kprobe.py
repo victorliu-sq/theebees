@@ -349,8 +349,8 @@ while (1):
             metrics_cpu_sum[bucket_range] = bucket_idx2count[i]
         metrics_cpu_avg[bucket_range] = metrics_cpu_sum[bucket_range] / ((curTime + 1) // RECORD_TIME_INTERVAL)
 
-
-    time_range = str(curTime + 1 - RECORD_TIME_INTERVAL) + "-" + str(curTime)
+    time_range = curTime + 1
+    # time_range = str(curTime + 1 - RECORD_TIME_INTERVAL) + "-" + str(curTime)
     cur_metrics_cpu["time-range"] = time_range 
     metrics_cpu += [cur_metrics_cpu]
     data["cpu_sum"] = metrics_cpu_sum

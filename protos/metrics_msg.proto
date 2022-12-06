@@ -7,8 +7,16 @@ service QueryManager {
 }
 
 // cpu_avg + cpu_sum
-message CPUDist {
+message CPUDistFloat {
     map<string, float> range2usecs = 1;
+}
+
+message CPUDistUint32 {
+    map<string, uint32> range2usecs = 1;
+}
+
+message MultipleCPUDistUint32 {
+    repeated CPUDistUint32 multiple_range2usecs = 1;
 }
 
 message MetricsRequest{
@@ -16,7 +24,7 @@ message MetricsRequest{
 }
 
 message MetricsResponse{
-    CPUDist cpu_avg = 1;
-    CPUDist cpu_sum = 2;
-    repeated CPUDist cpu = 3;
+    CPUDistFloat cpu_avg = 1;
+    CPUDistUint32 cpu_sum = 2;
+    MultipleCPUDistUint32 cpu = 3;
 }
