@@ -44,7 +44,7 @@ class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
                 # results[m] = data[m]
         # print(results)
         # print(request.metrics)
-        print("hello")
+        # print("hello")
         return metrics_resp
 
 def runGRPCServer():

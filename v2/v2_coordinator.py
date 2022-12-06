@@ -20,14 +20,6 @@ class Metrics(Resource):
         # print(metrics_names)
         result = v2_grpc_client.runQueryMetrics(metrics_names)
         return result
-        # results = {}
-        # with open("db/cpu.json", "r") as f:
-        #     data = json.load(f)
-        #     # print(data["cpu"])
-        #     for m in metrics_names.split(","):
-        #         results[m] = data[m]
-        # print(results)
-        # return results
 
 api.add_resource(Metrics, '/<string:metrics_names>')
 

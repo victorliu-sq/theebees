@@ -43,7 +43,7 @@ def runQueryMetrics(metrics_names):
                 result[metric_name] = from_protobuf_cpu(response)
         return result
         # from_protobuf_cpu(response)
-        print("hello")
+        # print("hello")
         # print(response)
 
         

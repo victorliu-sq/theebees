@@ -7,12 +7,6 @@ generate:
 clean:
 	rm *_pb2.py
 
-# run_server:
-# 	python3 ./v2_grpc_server.py
-
-# run_client:
-# 	python3 ./v2_grpc_client.py
-
 runClient:
 	python3 ./v2_client.py
 
