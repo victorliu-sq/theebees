@@ -72,15 +72,10 @@ parser.add_argument("-d", "--database",
 
 args = parser.parse_args()
 
-debug = 0
-
 # countdown = int(args.count)
 # countdown = 5
 
 # ********************************************************************
-args.extension = 1
-args.pid = 3327
-args.interval = 1
 
 bpf_text = """
 #include <uapi/linux/ptrace.h>
@@ -170,6 +165,13 @@ BAIL:
     return 0;
 }
 """
+debug = 0
+
+# ******************************************************************
+args.extension = 1
+args.pid = 3327
+args.interval = 1
+# ******************************************************************
 
 if args.pid:
     bpf_text = bpf_text.replace('PID_FILTER', 'tgid != %s' % args.pid)
@@ -384,5 +386,3 @@ while (1):
 
     if exiting:
         exit()
-
-    
