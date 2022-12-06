@@ -3,7 +3,7 @@ import metrics_msg_pb2
 import metrics_msg_pb2_grpc
 
 def newMetricsRequest():
-    req = metrics_msg_pb2.MetricsRequest(metrics="hello")
+    req = metrics_msg_pb2.MetricsRequest(metrics="cpu,cpu_avg,cpu_sum")
     return req
 
 def run():
@@ -11,6 +11,7 @@ def run():
         stub = metrics_msg_pb2_grpc.QueryManagerStub(channel)
         metrics_req = newMetricsRequest()
         response = stub.QueryMetrics(metrics_req)
+        print("hello")
         print(response)
 
         

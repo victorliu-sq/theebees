@@ -6,10 +6,17 @@ service QueryManager {
     rpc QueryMetrics (MetricsRequest) returns (MetricsResponse) {};
 }
 
+// cpu_avg + cpu_sum
+message CPUDist {
+    map<string, float> range2usecs = 1;
+}
+
 message MetricsRequest{
     string metrics = 1;
 }
 
 message MetricsResponse{
-    string data = 1;
+    CPUDist cpu_avg = 1;
+    CPUDist cpu_sum = 2;
+    repeated CPUDist cpu = 3;
 }

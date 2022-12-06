@@ -6,3 +6,9 @@ generate:
 
 clean:
 	rm *_pb2.py
+
+run_server:
+	python3 ./metrics_msg_server.py
+
+run_client:
+	python3 ./metrics_msg_client.py

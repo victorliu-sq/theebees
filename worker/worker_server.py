@@ -32,12 +32,8 @@ class Metrics(Resource):
 api.add_resource(Metrics, '/<string:req_metrics>')
 
 if __name__ == '__main__':
-    # exec(open('jx_cpu_kprobe').read())
     UserAgentClass = UserAgent()
-    # thread_web_server = Thread(target=UserAgentClass.run_web_server)
     thread_cpu_collector = Thread(target=UserAgentClass.run_cpu_kprobe)
-    # thread_web_server.start()
     thread_cpu_collector.start()
     app.run(debug=True)
     thread_cpu_collector.join()
-    # thread_web_server.join()
