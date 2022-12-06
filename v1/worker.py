@@ -13,7 +13,7 @@ api = Api(app)
 class UserAgent():
     def run_cpu_kprobe(self):
         # set pid to 3327 and interval to 1
-        call(["python3", sys.path[0]+"/"+"jx_cpu_kprobe.py"])
+        call(["python3", "kprobes/jx_cpu_kprobe.py"])
     
     def run_web_server(self):
         app.run(debug=True)

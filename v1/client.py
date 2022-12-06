@@ -28,8 +28,13 @@ def parse(command):
         else:
             results[m] = {}
     # print(metrics)
-    response = sendRequest(ws[1])
-    print(response.json())
+    response = sendRequest(ws[1]).json()
+    for metric_name in requested_metrics:
+        print()
+        print(metric_name, ":")
+        print("====================================================")
+        print(response[metric_name])
+        print("====================================================")
 
 def run_node():
     existing = 0
