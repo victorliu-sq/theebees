@@ -5,15 +5,41 @@ import json
 # import jx_cpu_kprobe
 from subprocess import call
 from threading import Thread
-import sys
+# specify a port
+import argparse
 
 app = Flask(__name__)
 api = Api(app)
 
+parser = argparse.ArgumentParser(
+    description="Summarize on- and off-CPU time per task as a histogram.",
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+)
+
+parser.add_argument("-n", "--Node", help="Specify the node for  the worker")
+
+args = parser.parse_args()
+
+# node2db and node2port
+node2db = {
+    "n1":"db1/metrics.json",
+    "n2":"db2/metrics.json",
+    "n3":"db3/metrics.json"
+}
+
+node2port = {
+    "n1": 6000,
+    "n2": 6100,
+    "n3": 6200
+}
+
 class UserAgent():
     def run_cpu_kprobe(self):
         # set pid to 3327 and interval to 1
-        call(["python3", "kprobes/jx_cpu_kprobe.py"])
+        db_path = node2db[args.Node]
+        flag_db_path = "-d" + db_path
+        # print(flag_db_path)
+        call(["python3", "kprobes/jx_cpu_kprobe.py", "-p 1234", flag_db_path])
     
     def run_web_server(self):
         app.run(debug=True)
@@ -21,7 +47,8 @@ class UserAgent():
 class Metrics(Resource):
     def get(self, req_metrics):
         results = {}
-        with open("db/cpu.json", "r") as f:
+        db_path = node2db[args.Node]
+        with open(db_path, "r") as f:
             data = json.load(f)
             # print(data["cpu"])
             for m in req_metrics.split(","):
@@ -35,5 +62,6 @@ if __name__ == '__main__':
     ua = UserAgent()
     thread_cpu_collector = Thread(target=ua.run_cpu_kprobe)
     thread_cpu_collector.start()
-    app.run(debug=True)
+    port = node2port[args.Node]
+    app.run(debug=True, port=port, host='localhost')
     thread_cpu_collector.join()

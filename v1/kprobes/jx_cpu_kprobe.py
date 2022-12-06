@@ -24,6 +24,7 @@ import math
 import ctypes
 import json
 from collections import defaultdict
+import sys
 
 examples = """examples:
     cpudist              # summarize on-CPU time as a histogram
@@ -64,20 +65,22 @@ parser.add_argument("count", nargs="?", default=99999999,
     help="number of outputs")
 parser.add_argument("--ebpf", action="store_true",
     help=argparse.SUPPRESS)
+
+
+parser.add_argument("-d", "--database", 
+    help="path of database")
+
 args = parser.parse_args()
 
 debug = 0
 
-countdown = int(args.count)
+# countdown = int(args.count)
 # countdown = 5
-
 
 # ********************************************************************
 args.extension = 1
 args.pid = 3327
 args.interval = 1
-
-
 
 bpf_text = """
 #include <uapi/linux/ptrace.h>
@@ -258,12 +261,16 @@ max_bucket_num = 0
 
 # initialize cpu.json: cpu, avg_cpu, sum_cpu
 data = {}
-with open('db/cpu.json', "w") as f:
+
+# print(args.database)
+db_path = args.database
+# with open('%s.json' % args.database, "w") as f:
+import sys
+with open(db_path, "w") as f:
     data["cpu_avg"] = defaultdict(float)
     data["cpu_sum"] = defaultdict(int)
     data["cpu"] = []
     json.dump(data, f)
-
 # Record interval
 RECORD_TIME_INTERVAL = 5
 
@@ -318,7 +325,7 @@ while (1):
     metrics_cpu_sum = defaultdict(int)
     metrics_cpu_avg = defaultdict(float)
     print("Read CPU metrics from a json File")
-    with open("db/cpu.json", "r") as f:
+    with open(db_path, "r") as f:
         data = json.load(f)
         # print(data["cpu"])
         metrics_cpu_sum = data["cpu_sum"]
@@ -355,10 +362,10 @@ while (1):
     metrics_cpu += [cur_metrics_cpu]
     data["cpu_sum"] = metrics_cpu_sum
     data["cpu_avg"] = metrics_cpu_avg
-    data["cpu"] = metrics_cpu
+    # data["cpu"] = metrics_cpu
 
-    print("=================================================================")
-    print("current CPU:", cur_metrics_cpu)
+    # print("=================================================================")
+    # print("current CPU:", cur_metrics_cpu)
     print("=================================================================")
     print("CPU_sum:", metrics_cpu_sum)
     print("=================================================================")
@@ -369,14 +376,13 @@ while (1):
 
     # Write udpate metrics back into the file
     print("Write CPU metrics into a json File")
-    with open('db/cpu.json', "w") as f:
+    with open(db_path, "w") as f:
         json.dump(data, f)
 
     dist.clear()
     cur_metrics_cpu = {}
 
-    countdown -= 1
-    if exiting or countdown == 0:
+    if exiting:
         exit()
 
     
