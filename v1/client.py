@@ -28,23 +28,18 @@ def parse(command:str, p:proxy.Proxy):
     nodes = ws[3]
     # broadcast requests to nodes
     results = p.broadcastRequests(nodes, metrics_names)
-    print(results)
-    # requested_metrics = ws[1].split(",")
-    # results = {}
-    # for m in requested_metrics:
-    #     if m == "cpu":
-    #         results[m] = [] 
-    #     else:
-    #         results[m] = {}
-    # print(metrics)
-    # Get the response
-    # response = sendRequest(ws[1]).json()
-    # for metric_name in requested_metrics:
-    #     print()
-    #     print(metric_name, ":")
-    #     print("====================================================")
-    #     print(response[metric_name])
-    #     print("====================================================")
+    for node in nodes.split(","):
+        print()
+        print("********************", node, "********************")
+        # print(results[node])
+        requested_metrics = metrics_names.split(",")
+        # Get the metrics for each node
+        for metric_name in requested_metrics:
+            print()
+            print(metric_name, ":")
+            print("====================================================")
+            print(results[node][metric_name])
+            print("====================================================")
 
 def run_node():
     node2addr = {

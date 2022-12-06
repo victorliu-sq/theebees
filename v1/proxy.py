@@ -11,7 +11,8 @@ class Proxy():
         for node in nodes.split(","):
             if node in self.node2addr:
                 base = self.node2addr[node]
-                print(base)
+                print(node, base)
                 response = requests.get(base + metrics)
                 results[node] = response.json()
+                print(results[node])
         return results

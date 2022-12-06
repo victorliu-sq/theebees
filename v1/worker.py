@@ -30,7 +30,7 @@ node2db = {
 node2port = {
     "n1": 6000,
     "n2": 6100,
-    "n3": 6200
+    "n3": 6200,
 }
 
 class UserAgent():
@@ -39,7 +39,7 @@ class UserAgent():
         db_path = node2db[args.Node]
         flag_db_path = "-d" + db_path
         # print(flag_db_path)
-        call(["python3", "kprobes/jx_cpu_kprobe.py", "-p 1234", flag_db_path])
+        call(["python3", "kprobes/jx_cpu_kprobe.py", flag_db_path])
     
     def run_web_server(self):
         app.run(debug=True)
@@ -61,7 +61,7 @@ api.add_resource(Metrics, '/<string:req_metrics>')
 if __name__ == '__main__':
     ua = UserAgent()
     thread_cpu_collector = Thread(target=ua.run_cpu_kprobe)
-    # thread_cpu_collector.start()
+    thread_cpu_collector.start()
     port = node2port[args.Node]
     app.run(debug=True, port=port, host='localhost')
-    # thread_cpu_collector.join()
+    thread_cpu_collector.join()
