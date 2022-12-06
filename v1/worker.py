@@ -50,10 +50,10 @@ class Metrics(Resource):
         db_path = node2db[args.Node]
         with open(db_path, "r") as f:
             data = json.load(f)
-            # print(data["cpu"])
             for m in req_metrics.split(","):
+                # print(data[m])
                 results[m] = data[m]
-        print(results)
+        # print(results)
         return results
 
 api.add_resource(Metrics, '/<string:req_metrics>')
@@ -61,7 +61,7 @@ api.add_resource(Metrics, '/<string:req_metrics>')
 if __name__ == '__main__':
     ua = UserAgent()
     thread_cpu_collector = Thread(target=ua.run_cpu_kprobe)
-    thread_cpu_collector.start()
+    # thread_cpu_collector.start()
     port = node2port[args.Node]
     app.run(debug=True, port=port, host='localhost')
-    thread_cpu_collector.join()
+    # thread_cpu_collector.join()

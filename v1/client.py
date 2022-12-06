@@ -27,7 +27,8 @@ def parse(command:str, p:proxy.Proxy):
     metrics_names = ws[1]
     nodes = ws[3]
     # broadcast requests to nodes
-    p.sendRequests(nodes, metrics_names)
+    results = p.broadcastRequests(nodes, metrics_names)
+    print(results)
     # requested_metrics = ws[1].split(",")
     # results = {}
     # for m in requested_metrics:
@@ -48,8 +49,8 @@ def parse(command:str, p:proxy.Proxy):
 def run_node():
     node2addr = {
         "n1" : "http://127.0.0.1:6000/",
-        "n2" : "http://127.0.0.1:6001/",
-        "n3" : "http://127.0.0.1:6002/",
+        "n2" : "http://127.0.0.1:6100/",
+        "n3" : "http://127.0.0.1:6200/",
     }
     p = proxy.Proxy(node2addr)
     existing = 0

@@ -6,12 +6,12 @@ class Proxy():
         # dictionary of {node_name : ip:port} 
         self.node2addr = node2addr
     
-    def sendRequests(self, nodes:str, metrics:str):
+    def broadcastRequests(self, nodes:str, metrics:str):
         results = {}
         for node in nodes.split(","):
             if node in self.node2addr:
                 base = self.node2addr[node]
                 print(base)
-                # response = requests.get(base + metrics)
-                # results[node] = response
+                response = requests.get(base + metrics)
+                results[node] = response.json()
         return results
