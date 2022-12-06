@@ -29,8 +29,14 @@ client
 ```shell
 # run the client
 make runClient
+
 # input a command
 select cpu_avg,cpu_sum from n1,n2,n3
+# metrics_name will be "cpu_avg,cpu_sum"
+# nodes will be "n1,n2,n3"
+
+select cpu_avg from n1,n2
+select cpu_avg,cpu_sum from n1
 ```
 
 
@@ -62,3 +68,8 @@ client
 make runClient
 ```
 
+
+
+# Job-A
+
+write 2 kprobes into kprobes 
