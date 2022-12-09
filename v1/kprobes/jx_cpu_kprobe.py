@@ -261,6 +261,7 @@ curTime = 0
 # max_use_cs
 max_bucket_num = 0
 
+
 # initialize cpu.json: cpu, avg_cpu, sum_cpu
 data = {}
 

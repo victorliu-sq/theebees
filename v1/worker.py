@@ -11,6 +11,8 @@ import argparse
 app = Flask(__name__)
 api = Api(app)
 
+# specify port for current worker
+
 parser = argparse.ArgumentParser(
     description="Summarize on- and off-CPU time per task as a histogram.",
     formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -49,6 +51,7 @@ class Metrics(Resource):
     def get(self, req_metrics):
         results = {}
         db_path = node2db[args.Node]
+        print("Hello")
         with open(db_path, "r") as f:
             data = json.load(f)
             for m in req_metrics.split(","):

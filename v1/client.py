@@ -2,8 +2,6 @@ import requests
 import os
 import proxy
 
-base = "http://127.0.0.1:5000/"
-
 def printResults(results, nodes, metrics_names):
     for node in nodes.split(","):
         print()
