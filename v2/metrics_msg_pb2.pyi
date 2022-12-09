@@ -32,10 +32,12 @@ class CPUDistUint32(_message.Message):
     def __init__(self, range2usecs: _Optional[_Mapping[str, int]] = ...) -> None: ...
 
 class MetricsRequest(_message.Message):
-    __slots__ = ["metrics"]
+    __slots__ = ["metrics", "node_name"]
     METRICS_FIELD_NUMBER: _ClassVar[int]
+    NODE_NAME_FIELD_NUMBER: _ClassVar[int]
     metrics: str
-    def __init__(self, metrics: _Optional[str] = ...) -> None: ...
+    node_name: str
+    def __init__(self, metrics: _Optional[str] = ..., node_name: _Optional[str] = ...) -> None: ...
 
 class MetricsResponse(_message.Message):
     __slots__ = ["cpu", "cpu_avg", "cpu_sum"]

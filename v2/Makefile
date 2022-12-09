@@ -15,3 +15,12 @@ runCoordinator:
 
 runWorker:
 	sudo python3 ./v2_worker.py
+
+runWorker1:
+	sudo python3 ./v2_worker.py -n n1
+
+runWorker2:
+	sudo python3 ./v2_worker.py -n n2
+
+runWorker3:
+	sudo python3 ./v2_worker.py -n n3

@@ -24,15 +24,18 @@ def from_protobuf_cpu(resp:metrics_msg_pb2.MetricsResponse):
         cpu += [c["range2usecs"]]
     return cpu
 
-def newMetricsRequest():
-    req = metrics_msg_pb2.MetricsRequest(metrics="cpu,cpu_avg,cpu_sum")
+def newMetricsRequest(metrics_names, node_name):
+    req = metrics_msg_pb2.MetricsRequest(metrics=metrics_names, node_name=node_name)
     return req
 
-def runQueryMetrics(metrics_names):
-    with grpc.insecure_channel('localhost:8888') as channel:
+def runQueryMetrics(metrics_names, node_name, port):
+    with grpc.insecure_channel('localhost:' + port) as channel:
+        # print("Try to get metrics from", port)
         stub = metrics_msg_pb2_grpc.QueryManagerStub(channel)
-        metrics_req = newMetricsRequest()
+        metrics_req = newMetricsRequest(metrics_names, node_name)
+        # print("Hello1")
         response = stub.QueryMetrics(metrics_req)
+        # print("Hello2")
         result = {}
         for metric_name in metrics_names.split(","):
             if metric_name == "cpu_avg":
@@ -41,6 +44,7 @@ def runQueryMetrics(metrics_names):
                 result[metric_name] = from_protobuf_cpu_sum(response)
             elif metric_name == "cpu":
                 result[metric_name] = from_protobuf_cpu(response)
+        # print("Hello3")
         return result
         # from_protobuf_cpu(response)
         # print("hello")

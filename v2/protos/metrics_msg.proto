@@ -21,6 +21,7 @@ message MultipleCPUDistUint32 {
 
 message MetricsRequest{
     string metrics = 1;
+    string node_name = 2;
 }
 
 message MetricsResponse{

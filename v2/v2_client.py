@@ -4,8 +4,21 @@ import json
 
 base = "http://127.0.0.1:6000/"
 
-def sendRequest(metrics):
-    response = requests.get(base + metrics)
+def printResults(results, nodes, metrics_names):
+    for node in nodes.split(","):
+        print()
+        print("********************", node, "********************")
+        # print(results[node])
+        # Get the metrics for each node
+        for metric_name in metrics_names.split(","):
+            print()
+            print(metric_name, ":")
+            print("====================================================")
+            print(results[node][metric_name])
+            print("====================================================")
+
+def sendRequest(metrics, nodes):
+    response = requests.get(base + metrics + "/" + nodes)
     return response
 
 def parse(command):
@@ -15,7 +28,13 @@ def parse(command):
         print("first command should be [select]")
         return
     
+    if ws[2] != "from":
+        print("second command should be [select]")
+        return
     # metrics to select
+    metrics_names = ws[1]
+    nodes = ws[3]
+    
     requested_metrics = ws[1].split(",")
     results = {}
     for m in requested_metrics:
@@ -23,14 +42,8 @@ def parse(command):
             results[m] = [] 
         else:
             results[m] = {}
-    response = sendRequest(ws[1]).json()
-    print(type(response))
-    for metric_name in requested_metrics:
-        print()
-        print(metric_name, ":")
-        print("====================================================")
-        print(response[metric_name])
-        print("====================================================")
+    results = sendRequest(metrics_names, nodes).json()
+    printResults(results, nodes, metrics_names)
 
 def run_node():
     existing = 0
