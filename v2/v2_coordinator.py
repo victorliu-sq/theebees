@@ -8,6 +8,8 @@ from threading import Thread
 import sys
 import v2_grpc_client
 
+import threading
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -18,12 +20,6 @@ node2port = {
     "n3": "9999",
 }
 
-node2db = {
-    "n1":"db1/metrics.json",
-    "n2":"db2/metrics.json",
-    "n3":"db3/metrics.json"
-}
-
 class UserAgent():
     def run_web_server(self):
         app.run(debug=True)
@@ -32,14 +28,20 @@ class Metrics(Resource):
     def get(self, metrics_names, nodes):
         # print(metrics_names)
         # print(nodes)
-        result = {}
+        results = {}
+        threads = {}
         for node in nodes.split(","):
             port = node2port[node]
             node_name = node
             # print(node, port)
-            result[node] = v2_grpc_client.runQueryMetrics(metrics_names, node_name, port)
-        print("result is done")
-        return result
+            thread = threading.Thread(target=v2_grpc_client.SendQueryMetrics, args=(results, metrics_names, node_name, port))
+            threads[node] = thread
+        for thread in threads.values():
+            thread.start()
+        for thread in threads.values():
+            thread.join()
+        print("results is done")
+        return results
 
 api.add_resource(Metrics, '/<string:metrics_names>/<string:nodes>')
 

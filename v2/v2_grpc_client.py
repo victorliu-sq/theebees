@@ -3,6 +3,9 @@ import metrics_msg_pb2
 import metrics_msg_pb2_grpc
 import json
 import google.protobuf.json_format as json_format
+import threading
+
+lock = threading.Lock()
 
 def from_protobuf_cpu_avg(resp:metrics_msg_pb2.MetricsResponse):
     cpu_avg_json = json_format.MessageToJson(resp.cpu_avg)
@@ -28,7 +31,7 @@ def newMetricsRequest(metrics_names, node_name):
     req = metrics_msg_pb2.MetricsRequest(metrics=metrics_names, node_name=node_name)
     return req
 
-def runQueryMetrics(metrics_names, node_name, port):
+def SendQueryMetrics(results, metrics_names, node_name, port):
     with grpc.insecure_channel('localhost:' + port) as channel:
         # print("Try to get metrics from", port)
         stub = metrics_msg_pb2_grpc.QueryManagerStub(channel)
@@ -45,10 +48,9 @@ def runQueryMetrics(metrics_names, node_name, port):
             elif metric_name == "cpu":
                 result[metric_name] = from_protobuf_cpu(response)
         # print("Hello3")
-        return result
-        # from_protobuf_cpu(response)
-        # print("hello")
-        # print(response)
+        lock.acquire()
+        results[node_name] = result
+        lock.release()
 
         
 if __name__ == "__main__":
