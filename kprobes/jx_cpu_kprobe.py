@@ -265,9 +265,8 @@ max_bucket_num = 0
 data = {}
 
 # print(args.database)
-# remove the first char (" ")
+# remove the space char at first position
 db_path = args.database
-print(db_path)
 # with open('%s.json' % args.database, "w") as f:
 import sys
 with open(db_path, "w") as f:

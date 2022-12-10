@@ -3,6 +3,14 @@
 ```shell
 # run the cpu_kprobe
 sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
+
+```
+
+```python
+args.extension = 1
+args.pid = 3327
+args.interval = 1
+# must use extension, interval is 1s, and pid is fixed as 3327
 ```
 
 
@@ -33,20 +41,21 @@ select cpu_avg,cpu_sum from n1,n2,n3
 # metrics_name will be "cpu_avg,cpu_sum"
 # nodes will be "n1,n2,n3"
 
-select cpu_avg from n1,n2
-select cpu_avg,cpu_sum from n1
+select cpu_avg from n1,n2,n3
+
+select cpu_avg,cpu_sum from n1,n3
 ```
 
 
 
 # V2
 
-Currently we only support one worker in V2
-
 worker
 
 ```shell
-make runWorker
+make runWorker1
+make runWorker2
+make runWorker3
 ```
 
 
@@ -64,10 +73,22 @@ client
 ```shell
 # run the client
 make runClient
+
+
+# operations
+select cpu_avg from n1,n2,n3
+
+select cpu_avg,cpu_sum from n1,n3
 ```
 
 
 
-# Job-A
+# Job
 
 write 2 kprobes into kprobes 
+
+
+
+# Problem
+
+No time for evaluation
