@@ -56,13 +56,6 @@ print("Tracing... Ctrl-C to end.")
 
 
 total_time = 0
-value_sum = 0
-data = {}
-with open(db_path, "w") as f:
-    data["cpu_avg"] = defaultdict(float)
-    data["cpu_sum"] = defaultdict(int)
-    data["cpu"] = []
-    json.dump(data, f)
 # output
 while (1):
     try:
@@ -73,15 +66,22 @@ while (1):
     # print("%s: PIDs/sec: %d" % (strftime("%H:%M:%S"),
     #     b["stats"][S_COUNT].value))
     
+    data = {}
+    value_sum = 0
+    print("Read pidpersec from json file")
+    with open(db_path, "r") as f:
+        data = json.load(f)
+        value_sum = data["pidpersec_sum"]
+    
     total_time += 1
     value_sum += b["stats"][S_COUNT].value
-    # print(total_time)
     value_avg = float(value_sum) / float(total_time)
     
-    data["pidpersec_avg"] = value_avg
-    data["pidpersec_sum"] = value_sum
-    print("%s: SUM_PIDs/sec: %d, AVG_PIDs/sec: %f" % (strftime("%H:%M:%S"),data["pidpersec_sum"],data["pidpersec_avg"]))
+    print("Write pidpersec into json file")
     with open(db_path, "w") as f:
+        data["pidpersec_avg"] = value_avg
+        data["pidpersec_sum"] = value_sum
+        print("%s: SUM_PIDs/sec: %d, AVG_PIDs/sec: %f" % (strftime("%H:%M:%S"),data["pidpersec_sum"],data["pidpersec_avg"]))
         json.dump(data, f)
     
     b["stats"].clear()

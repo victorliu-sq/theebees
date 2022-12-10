@@ -17,11 +17,6 @@ def printResults(results, nodes, metrics_names):
     
 
 def parseQUERY(command:str, client_proxy:proxy.ClientProxy):
-    metrics = {
-        "cpu": False,
-        "cpu_sum": False,
-        "cpu_avg": False,
-    }
     # first str should be select
     ws = command.split(" ")
     if ws[0] != "select":
