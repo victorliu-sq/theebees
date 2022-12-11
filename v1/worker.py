@@ -54,6 +54,14 @@ class UserAgent():
         # print(flag_db_path)
         call(["python3", "kprobes/pidpersec_kprobe.py", flag_db_path])
     
+    def run_runqlat_kprobe(self):
+        # set pid to 3327 and interval to 1
+        db_path = node2db[args.Node]
+        # notice that we do not need " " if pass args through string
+        flag_db_path = "-d" + db_path
+        # print(flag_db_path)
+        call(["python3", "kprobes/runqlat_kprobe.py", flag_db_path])
+    
     def run_web_server(self):
         app.run(debug=True)
 
@@ -81,15 +89,20 @@ if __name__ == '__main__':
         data["cpu"] = []
         data["pidpersec_avg"] = 0.0
         data["pidpersec_sum"] = 0
+        data["runqlat_avg"] = 0.0
+        data["runqlat_sum"] = 0
         json.dump(data, f)
     
     ua = UserAgent()
     thread_cpu_collector = Thread(target=ua.run_cpu_kprobe)
     thread_pidpersec_collector = Thread(target=ua.run_pidpersec_kprobe)
+    thread_runqlat_collector = Thread(target=ua.run_runqlat_kprobe)
     thread_cpu_collector.start()
     thread_pidpersec_collector.start()
+    thread_runqlat_collector.start()
     port = node2port[args.Node]
     
     app.run(debug=True, port=port, host='localhost')
     thread_cpu_collector.join()
     thread_pidpersec_collector.join()
+    thread_runqlat_collector.join()
