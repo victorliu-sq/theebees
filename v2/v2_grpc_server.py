@@ -28,6 +28,12 @@ def to_protobuf_cpu(cpu_arr, resp:metrics_msg_pb2.MetricsResponse):
             temp_cpu_dist.range2usecs[k] = v
         resp.cpu.multiple_range2usecs.append(temp_cpu_dist)
 
+def to_protobuf_pidpersec_avg(pidpersec_avg, resp: metrics_msg_pb2.MetricsResponse):
+    resp.pidpersec_avg = pidpersec_avg
+
+def to_protobuf_pidpersec_sum(pidpersec_sum, resp: metrics_msg_pb2.MetricsResponse):
+    resp.pidpersec_sum = pidpersec_sum
+
 class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):        
     def QueryMetrics(self, request, context):
         # open db/cpu.json and read metrics
@@ -47,6 +53,10 @@ class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
                     to_protobuf_cpu_sum(data[m], metrics_resp)
                 elif m == "cpu":
                     to_protobuf_cpu(data[m], metrics_resp)
+                elif m == "pidpersec_avg":
+                    to_protobuf_pidpersec_avg(data[m], metrics_resp)
+                elif m == "pidpersec_sum":
+                    to_protobuf_pidpersec_sum(data[m], metrics_resp)
             # print(metrics_resp)
         return metrics_resp
     

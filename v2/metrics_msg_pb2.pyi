@@ -40,14 +40,18 @@ class MetricsRequest(_message.Message):
     def __init__(self, metrics: _Optional[str] = ..., node_name: _Optional[str] = ...) -> None: ...
 
 class MetricsResponse(_message.Message):
-    __slots__ = ["cpu", "cpu_avg", "cpu_sum"]
+    __slots__ = ["cpu", "cpu_avg", "cpu_sum", "pidpersec_avg", "pidpersec_sum"]
     CPU_AVG_FIELD_NUMBER: _ClassVar[int]
     CPU_FIELD_NUMBER: _ClassVar[int]
     CPU_SUM_FIELD_NUMBER: _ClassVar[int]
+    PIDPERSEC_AVG_FIELD_NUMBER: _ClassVar[int]
+    PIDPERSEC_SUM_FIELD_NUMBER: _ClassVar[int]
     cpu: MultipleCPUDistUint32
     cpu_avg: CPUDistFloat
     cpu_sum: CPUDistUint32
-    def __init__(self, cpu_avg: _Optional[_Union[CPUDistFloat, _Mapping]] = ..., cpu_sum: _Optional[_Union[CPUDistUint32, _Mapping]] = ..., cpu: _Optional[_Union[MultipleCPUDistUint32, _Mapping]] = ...) -> None: ...
+    pidpersec_avg: float
+    pidpersec_sum: int
+    def __init__(self, cpu_avg: _Optional[_Union[CPUDistFloat, _Mapping]] = ..., cpu_sum: _Optional[_Union[CPUDistUint32, _Mapping]] = ..., cpu: _Optional[_Union[MultipleCPUDistUint32, _Mapping]] = ..., pidpersec_avg: _Optional[float] = ..., pidpersec_sum: _Optional[int] = ...) -> None: ...
 
 class MultipleCPUDistUint32(_message.Message):
     __slots__ = ["multiple_range2usecs"]

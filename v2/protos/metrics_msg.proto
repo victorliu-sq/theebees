@@ -28,4 +28,6 @@ message MetricsResponse{
     CPUDistFloat cpu_avg = 1;
     CPUDistUint32 cpu_sum = 2;
     MultipleCPUDistUint32 cpu = 3;
+    float pidpersec_avg = 4;
+    uint32 pidpersec_sum = 5;
 }

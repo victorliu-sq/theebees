@@ -27,6 +27,14 @@ def from_protobuf_cpu(resp:metrics_msg_pb2.MetricsResponse):
         cpu += [c["range2usecs"]]
     return cpu
 
+def from_protobuf_pidpersec_avg(resp:metrics_msg_pb2.MetricsResponse):
+    pidpersec_avg = resp.pidpersec_avg
+    return pidpersec_avg
+
+def from_protobuf_pidpersec_sum(resp:metrics_msg_pb2.MetricsResponse):
+    pidpersec_sum = resp.pidpersec_sum
+    return pidpersec_sum
+
 def newMetricsRequest(metrics_names, node_name):
     req = metrics_msg_pb2.MetricsRequest(metrics=metrics_names, node_name=node_name)
     return req
@@ -47,6 +55,10 @@ def SendQueryMetrics(results, metrics_names, node_name, port):
                 result[metric_name] = from_protobuf_cpu_sum(response)
             elif metric_name == "cpu":
                 result[metric_name] = from_protobuf_cpu(response)
+            elif metric_name == "pidpersec_avg":
+                result[metric_name] = from_protobuf_pidpersec_avg(response)
+            elif metric_name == "pidpersec_sum":
+                result[metric_name] = from_protobuf_pidpersec_sum(response)
         # print("Hello3")
         lock.acquire()
         results[node_name] = result
