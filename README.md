@@ -1,10 +1,25 @@
-# Single Probe
+
+
+# KProbe
+
+| Name      | Functionality                                                |
+| --------- | ------------------------------------------------------------ |
+| cpudist   | This measures the time a task spends on or off the CPU, and shows this time s a histogram, optionally per-process. |
+| pidpersec | This shows the number of new processes created per second, measured by tracing |
+
+
 
 ```shell
 # run the cpu_kprobe
 sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
 
+# run the pidpersec_kprobe
+sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
 ```
+
+
+
+some fixed arguments for cpu_kprobe
 
 ```python
 args.extension = 1
@@ -12,6 +27,12 @@ args.pid = 3327
 args.interval = 1
 # must use extension, interval is 1s, and pid is fixed as 3327
 ```
+
+
+
+
+
+
 
 
 
@@ -44,6 +65,8 @@ select cpu_avg,cpu_sum from n1,n2,n3
 select cpu_avg from n1,n2,n3
 
 select cpu_avg,cpu_sum from n1,n3
+
+select cpu_avg,pidpersec_avg from n1,n2,n3
 ```
 
 
@@ -79,16 +102,7 @@ make runClient
 select cpu_avg from n1,n2,n3
 
 select cpu_avg,cpu_sum from n1,n3
+
+select cpu_avg,pidpersec_avg from n1,n2,n3
 ```
 
-
-
-# Job
-
-write 2 kprobes into kprobes 
-
-
-
-# Problem
-
-No time for evaluation
