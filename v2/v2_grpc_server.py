@@ -34,6 +34,18 @@ def to_protobuf_pidpersec_avg(pidpersec_avg, resp: metrics_msg_pb2.MetricsRespon
 def to_protobuf_pidpersec_sum(pidpersec_sum, resp: metrics_msg_pb2.MetricsResponse):
     resp.pidpersec_sum = pidpersec_sum
 
+def to_protobuf_runqlat_avg(runqlat_avg, resp:metrics_msg_pb2.MetricsResponse):
+    for k, v in runqlat_avg.items():
+       resp.runqlat_avg.range2usecs[k] = v
+    # print(resp.runqlat_avg.range2usecs)
+
+def to_protobuf_runqlat_sum(runqlat_sum, resp:metrics_msg_pb2.MetricsResponse):
+    # print("Hello")
+    for k, v in runqlat_sum.items():
+        print(k, v)
+        resp.runqlat_sum.range2usecs[k] = v
+    # print(resp.runqlat_sum.range2usecs)
+
 class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):        
     def QueryMetrics(self, request, context):
         # open db/cpu.json and read metrics
@@ -45,6 +57,7 @@ class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
             data = json.load(f)
             # print(data["cpu"])
             for m in request.metrics.split(","):
+                # print(m)
                 if m not in data:
                     continue
                 if m == "cpu_avg":
@@ -57,7 +70,11 @@ class QueryManagerServicer(metrics_msg_pb2_grpc.QueryManagerServicer):
                     to_protobuf_pidpersec_avg(data[m], metrics_resp)
                 elif m == "pidpersec_sum":
                     to_protobuf_pidpersec_sum(data[m], metrics_resp)
-            # print(metrics_resp)
+                elif m == "runqlat_avg":
+                    to_protobuf_runqlat_avg(data[m], metrics_resp)
+                elif m == "runqlat_sum":
+                    to_protobuf_runqlat_sum(data[m], metrics_resp)
+                # print(metrics_resp)
         return metrics_resp
     
 

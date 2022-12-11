@@ -24,10 +24,21 @@ message MetricsRequest{
     string node_name = 2;
 }
 
-message MetricsResponse{
+// runqlat_avg + runqlat_sum
+message RunqlatFloat {
+    map<string, float> range2usecs = 1;
+}
+
+message RunqlatUint32 {
+    map<string, uint32> range2usecs = 1;
+}
+
+message MetricsResponse {
     CPUDistFloat cpu_avg = 1;
     CPUDistUint32 cpu_sum = 2;
     MultipleCPUDistUint32 cpu = 3;
     float pidpersec_avg = 4;
     uint32 pidpersec_sum = 5;
+    RunqlatFloat runqlat_avg = 6;
+    RunqlatUint32 runqlat_sum = 7;
 }

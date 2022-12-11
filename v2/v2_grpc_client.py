@@ -39,14 +39,24 @@ def newMetricsRequest(metrics_names, node_name):
     req = metrics_msg_pb2.MetricsRequest(metrics=metrics_names, node_name=node_name)
     return req
 
+def from_protobuf_runqlat_avg(resp:metrics_msg_pb2.MetricsResponse):
+    runqlat_avg_json = json_format.MessageToJson(resp.runqlat_avg)
+    runqlat_avg = json.loads(runqlat_avg_json)["range2usecs"]
+    return runqlat_avg
+
+def from_protobuf_runqlat_sum(resp:metrics_msg_pb2.MetricsResponse):
+    runqlat_sum_json = json_format.MessageToJson(resp.runqlat_sum)
+    runqlat_sum = json.loads(runqlat_sum_json)["range2usecs"]
+    return runqlat_sum
+
 def SendQueryMetrics(results, metrics_names, node_name, port):
     with grpc.insecure_channel('localhost:' + port) as channel:
         # print("Try to get metrics from", port)
         stub = metrics_msg_pb2_grpc.QueryManagerStub(channel)
         metrics_req = newMetricsRequest(metrics_names, node_name)
-        # print("Hello1")
+        print("Hello1")
         response = stub.QueryMetrics(metrics_req)
-        # print("Hello2")
+        print("Hello2")
         result = {}
         for metric_name in metrics_names.split(","):
             if metric_name == "cpu_avg":
@@ -59,7 +69,11 @@ def SendQueryMetrics(results, metrics_names, node_name, port):
                 result[metric_name] = from_protobuf_pidpersec_avg(response)
             elif metric_name == "pidpersec_sum":
                 result[metric_name] = from_protobuf_pidpersec_sum(response)
-        # print("Hello3")
+            elif metric_name == "runqlat_avg":
+                result[metric_name] = from_protobuf_runqlat_avg(response)
+            elif metric_name == "runqlat_sum":
+                result[metric_name] = from_protobuf_runqlat_sum(response)
+        print("Hello3")
         lock.acquire()
         results[node_name] = result
         lock.release()
@@ -69,4 +83,4 @@ if __name__ == "__main__":
     # metrics_req = newMetricsRequest()
     # print(metrics_req)
     metrics_req = "cpu,cpu_avg,cpu_sum"
-    runQueryMetrics(metrics_req)
+    SendQueryMetrics(metrics_req)
