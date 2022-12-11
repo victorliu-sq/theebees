@@ -89,8 +89,8 @@ if __name__ == '__main__':
         data["cpu"] = []
         data["pidpersec_avg"] = 0.0
         data["pidpersec_sum"] = 0
-        data["runqlat_avg"] = 0.0
-        data["runqlat_sum"] = 0
+        data["runqlat_avg"] = defaultdict(float)
+        data["runqlat_sum"] = defaultdict(int)
         json.dump(data, f)
     
     ua = UserAgent()

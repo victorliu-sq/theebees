@@ -324,23 +324,31 @@ while (1):
         # print(bucket_range)
         i = k - 1
         # update the 3 metrics
-        bucket_idx2runqlat_sum[i] += v
-        bucket_idx2runqlat_avg[i] = bucket_idx2runqlat_sum[i] / total_time
+        bucket_idx2runqlat_sum[bucket_range] += v
+        bucket_idx2runqlat_avg[bucket_range] = bucket_idx2runqlat_sum[bucket_range] / total_time
         # print(k, bucket_range,v)
     
     
     # remove the items whose v == 0 from back to save space
     for k in range(1, 64)[::-1]:
         # print("Hello")
-        if bucket_idx2runqlat_sum[k] == 0:
-            del bucket_idx2runqlat_sum[k]
+        l, h = 1 << (k - 1), (1 << k) - 1
+        if k == 1:
+            l = 0
+        bucket_range = str(l) + "-" + str(h)
+        if bucket_idx2runqlat_sum[bucket_range] == 0:
+            del bucket_idx2runqlat_sum[bucket_range]
         else:
             break
         
     for k in range(1, 64)[::-1]:
         # print("Hello")
-        if bucket_idx2runqlat_avg[k] == 0:
-            del bucket_idx2runqlat_avg[k]
+        l, h = 1 << (k - 1), (1 << k) - 1
+        if k == 1:
+            l = 0
+        bucket_range = str(l) + "-" + str(h)
+        if bucket_idx2runqlat_avg[bucket_range] == 0:
+            del bucket_idx2runqlat_avg[bucket_range]
         else:
             break
         
@@ -355,7 +363,7 @@ while (1):
         data["runqlat_sum"] = bucket_idx2runqlat_sum
         json.dump(data, f)
         
-    print("Hello3")
+    # print("Hello3")
     print("==============================================")
     print(bucket_idx2runqlat_sum)
     print("==============================================")
