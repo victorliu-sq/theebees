@@ -14,7 +14,10 @@
 sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
 
 # run the pidpersec_kprobe
-sudo python3 ./kprobes/jx_cpu_kprobe.py -d kprobes/db/metrics.json
+sudo python3 ./kprobes/pidpersec.py -d kprobes/db/metrics.json
+
+# run the runqlat_kprobe
+sudo python3 ./kprobes/runqlat.py -d kprobes/db/metrics.json
 ```
 
 
@@ -30,7 +33,7 @@ args.interval = 1
 
 
 
-
+# Preprocessing Functions
 
 
 
@@ -67,6 +70,8 @@ select cpu_avg from n1,n2,n3
 select cpu_avg,cpu_sum from n1,n3
 
 select cpu_avg,pidpersec_avg from n1,n2,n3
+
+select cpu_avg,pidpersec_avg,runqlat_avg,runqlat_sum from n1,n2,n3
 ```
 
 
@@ -104,5 +109,7 @@ select cpu_avg from n1,n2,n3
 select cpu_avg,cpu_sum from n1,n3
 
 select cpu_avg,pidpersec_avg from n1,n2,n3
+
+select cpu_avg,pidpersec_avg,runqlat_avg,runqlat_sum from n1,n2,n3
 ```
 

@@ -268,7 +268,6 @@ data = {}
 # remove the space char at first position
 db_path = args.database
 # with open('%s.json' % args.database, "w") as f:
-import sys
 with open(db_path, "w") as f:
     data["cpu_avg"] = defaultdict(float)
     data["cpu_sum"] = defaultdict(int)
