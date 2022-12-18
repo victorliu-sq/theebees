@@ -12,7 +12,7 @@ class ClientProxy():
         threads = {}
         for node in nodes.split(","):
             if node in self.node2addr:
-                thread = threading.Thread(target=self.sendRequest, args=(node, metrics, results))
+                thread = threading.Thread(target=self.sendRequest, args=(node, metrics, results), daemon=True)
                 threads[node] = thread
         for thread in threads.values():
             thread.start()

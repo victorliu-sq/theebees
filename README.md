@@ -4,8 +4,9 @@
 
 | Name      | Functionality                                                |
 | --------- | ------------------------------------------------------------ |
-| cpudist   | This measures the time a task spends on or off the CPU, and shows this time s a histogram, optionally per-process. |
-| pidpersec | This shows the number of new processes created per second, measured by tracing |
+| cpudist   | This kprobe measures the time a task spends on or off the CPU, and shows this time s a histogram, optionally per-process. |
+| pidpersec | This kprobe shows the number of new processes created per second, measured by tracing |
+| runqlat   | This kprobe summarizes scheduler run queue latency as a histogram, showing |
 
 
 
@@ -35,7 +36,26 @@ args.interval = 1
 
 # Preprocessing Functions
 
+| function name |      |
+| ------------- | ---- |
+| cpudist_avg   |      |
+| cpudist_sum   |      |
+| pidpersec_avg |      |
+| pidpersec_sum |      |
+| runqlat_avg   |      |
+| runqlat_sum   |      |
 
+
+
+
+
+# V0
+
+run a KProbe
+
+```shell
+sudo python3 ./cpudist.py -p 1888 -e 1
+```
 
 
 

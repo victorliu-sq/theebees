@@ -54,9 +54,9 @@ def SendQueryMetrics(results, metrics_names, node_name, port):
         # print("Try to get metrics from", port)
         stub = metrics_msg_pb2_grpc.QueryManagerStub(channel)
         metrics_req = newMetricsRequest(metrics_names, node_name)
-        print("Hello1")
+        # print("Hello1")
         response = stub.QueryMetrics(metrics_req)
-        print("Hello2")
+        # print("Hello2")
         result = {}
         for metric_name in metrics_names.split(","):
             if metric_name == "cpu_avg":
@@ -73,7 +73,7 @@ def SendQueryMetrics(results, metrics_names, node_name, port):
                 result[metric_name] = from_protobuf_runqlat_avg(response)
             elif metric_name == "runqlat_sum":
                 result[metric_name] = from_protobuf_runqlat_sum(response)
-        print("Hello3")
+        # print("Hello3")
         lock.acquire()
         results[node_name] = result
         lock.release()
